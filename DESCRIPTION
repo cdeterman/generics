@@ -22,4 +22,5 @@ Collate:
     'row_colnames.R'
     'sort.R'
     't.R'
+    'typeof.R'
     'var.R'
