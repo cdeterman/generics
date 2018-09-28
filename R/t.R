@@ -3,5 +3,8 @@
 ### -------------------------------------------------------------------------
 ###
 
+#' @title The t() generic
+#' @description Generic for the \link[base]{t} function
+#' @param x An R object
 #' @export
-setGeneric("t")
+setGeneric("t", signature = "x")
