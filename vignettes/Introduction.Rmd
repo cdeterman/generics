@@ -1,0 +1,68 @@
+---
+title: "Introduction to generics"
+author: "Charles Determan Jr."
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to generics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This is the \CRANpkg{generics} package developed primarily as a support package
+in the subsequent development of additional packages for the CRAN ecosystem.  Many 
+R packages that leverage the S4 OOP system must define their own generics via 
+\Rcode{setGeneric}.  As many functions are applicable across packages this package provides
+a centralized collection of generics to avoid the need to create package specific generic
+functions.  This additionally ensures that generics are explicitly defined whereby they will
+be searched and avoid the possible masking by other packages.
+
+## Basic Example
+
+Here is a basic example that demonstrates the typical way to create a new
+method for an S4 generic function.  The only difference is that the \Rfunction{setGeneric}
+does not need to be called.
+
+```{r, eval=FALSE}
+library(generics)
+setClass("myClass")
+setClass("A", contains="myClass")
+setMethod("typeof", signature(x="myClass"),
+          function(x) {
+            print('typeof was called')
+            switch(class(x),
+                   "A" = "myClassA",
+                   "B" = "myClassB",
+                   stop("unrecognized class"))
+          })
+
+```
+
+## Developing Packages
+
+The above example is only applicable in a single R session.  But what about
+when you create a new R package?  In that case you simply need to import the 
+relevant generic function.  The following would be how you would use roxygen2
+to import the \Rfunction{typeof} generic for setting methods.
+
+```{r, eval = FALSE}
+#' @importFrom generics typeof
+#' @import methods
+#' @export
+setMethod('typeof', signature(x="myClass"),
+          function(x) {
+            print('typeof was called')
+            switch(class(x),
+                   "A" = "myClassA",
+                   "B" = "myClassB",
+                   stop("unrecognized class"))
+          })
+
+```
